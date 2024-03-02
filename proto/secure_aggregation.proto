@@ -1,0 +1,70 @@
+// 这是一个Protocol Buffers（proto3）文件，定义安全聚合协议的接口和消息格式。
+
+syntax = "proto3";
+package secure_aggregation;
+
+// 定义一个名为Aggregator的服务，包含两个RPC方法
+service Aggregator {
+    // 用于聚合请求的方法
+    rpc Aggregate (AggregateRequestParameters) returns (AggregateResponseParameters);
+    // 用于启动聚合过程的方法
+    rpc Start (StartRequestParameters) returns (StartResponseParameters);
+}
+
+message AggregateRequestParameters {
+/*
+fl_id：联邦学习ID。
+round：当前轮次。
+encrypted_parameters：加密的参数。
+optimal_num_of_clients：最佳客户端数量。
+aggregation_alg：聚合算法。
+client_ids：参与聚合的客户端ID列表。
+*/
+    uint32 fl_id                    = 1;
+    uint32 round                    = 2;
+    bytes encrypted_parameters      = 3;
+    uint32 optimal_num_of_clients   = 4;
+    uint32 aggregation_alg          = 5;
+    repeated uint32 client_ids      = 6;
+}
+
+message AggregateResponseParameters {
+/*
+updated_parameters：更新后的参数。
+execution_time：执行时间。
+client_ids：参与聚合的客户端ID列表。
+round：当前轮次。
+*/
+    repeated float updated_parameters = 1;
+    float execution_time              = 2;
+    repeated uint32 client_ids        = 3;
+    uint32 round                      = 4;
+}
+
+message StartRequestParameters {
+/*
+fl_id：联邦学习ID。
+client_ids：参与联邦学习的客户端ID列表。
+sigma：噪声的标准差。
+clipping：梯度剪裁的阈值。
+sampling_ratio：采样比例。
+aggregation_alg：聚合算法。
+*/
+    uint32 fl_id                    = 1;
+    repeated uint32 client_ids      = 2;
+    float sigma                     = 3;
+    float clipping                  = 4;
+    float sampling_ratio            = 5;
+    uint32 aggregation_alg          = 6;
+}
+
+message StartResponseParameters {
+/*
+fl_id：联邦学习ID。
+round：当前轮次。
+client_ids：参与安全聚合的客户端ID列表。
+*/
+    uint32 fl_id                    = 1;
+    uint32 round                    = 2;
+    repeated uint32 client_ids      = 3;
+}
